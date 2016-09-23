@@ -18,7 +18,7 @@ export default class Input extends Component {
     }
 
     componentDidUpdate() {
-        var dir = this.props.dir;
+        const dir = this.props.dir;
 
         if (dir === null || dir === undefined) {
             // When setting an attribute to null/undefined,
@@ -32,15 +32,13 @@ export default class Input extends Component {
     }
 
     handleChange(event) {
-        var props = this.props;
-
         // There are several React bugs in IE,
         // where the `input`'s `onChange` event is
         // fired even when the value didn't change.
         // https://github.com/facebook/react/issues/2185
         // https://github.com/facebook/react/issues/3377
-        if (event.target.value !== props.value) {
-            props.onChange(event);
+        if (event.target.value !== this.props.value) {
+            this.props.onChange(event);
         }
     }
 
@@ -49,8 +47,8 @@ export default class Input extends Component {
     }
 
     isCursorAtEnd() {
-        var inputDOMNode = React.findDOMNode(this),
-            valueLength = this.props.value.length;
+        const inputDOMNode = React.findDOMNode(this);
+        const valueLength = this.props.value.length;
 
         return inputDOMNode.selectionStart === valueLength &&
                inputDOMNode.selectionEnd === valueLength;
@@ -58,10 +56,7 @@ export default class Input extends Component {
 
     render() {
         return (
-            <input
-                {...this.props}
-                onChange={this.handleChange}
-            />
+            <input {...this.props} onChange={this.handleChange} />
         );
     }
 }

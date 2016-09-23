@@ -1,18 +1,14 @@
-'use strict';
+import RTLCharactersRegExp from './rtl_chars_regexp';
+import NeutralCharactersRegExp from './neutral_chars_regexp';
 
-var RTLCharactersRegExp = require('./rtl_chars_regexp'),
-    NeutralCharactersRegExp = require('./neutral_chars_regexp'),
-    startsWithRTL = new RegExp('^(?:' + NeutralCharactersRegExp + ')*(?:' + RTLCharactersRegExp + ')'),
-    neutralText = new RegExp('^(?:' + NeutralCharactersRegExp + ')*$');
+const startsWithRTL = new RegExp('^(?:' + NeutralCharactersRegExp + ')*(?:' + RTLCharactersRegExp + ')');
+const neutralText = new RegExp('^(?:' + NeutralCharactersRegExp + ')*$');
 
-module.exports = function(text) {
-    var dir = 'ltr';
-
+export default (text) => {
     if (startsWithRTL.test(text)) {
-        dir = 'rtl';
+        return 'rtl';
     } else if (neutralText.test(text)) {
-        dir = null;
+        return null;
     }
-
-    return dir;
-};
+    return 'ltr';
+}

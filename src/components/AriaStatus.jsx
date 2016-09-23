@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+
 const style = {
     left: '-9999px',
     position: 'absolute'
@@ -6,7 +7,7 @@ const style = {
 
 export default class AriaStatus extends Component {
 
-    statis propTypes = {
+    static propTypes = {
         message: PropTypes.string
     }
 
@@ -26,11 +27,7 @@ export default class AriaStatus extends Component {
 
     render() {
         return (
-            <span
-                role='status'
-                aria-live='polite'
-                style={style}
-            />
+            <span role="status" aria-live="polite" style={style} />
         );
     }
 }

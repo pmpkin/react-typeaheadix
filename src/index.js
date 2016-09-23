@@ -1,1 +1,1 @@
-module.exports = require('./components/typeahead.jsx');
+module.exports = require('./components/Typeahead').default;

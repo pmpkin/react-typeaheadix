@@ -2,146 +2,130 @@ import React, { Component, PropTypes } from 'react';
 import Input from './Input';
 import AriaStatus from './AriaStatus';
 import getTextDirection from '../utils/get_text_direction';
+const noop = function() {};
 
-function noop() {}
+export default class Typeahead extends Component {
 
-export default React.createClass({
-    displayName: 'Typeahead',
+    static getInstanceCount = () => {
+        var count = 0;
+        return () => (++count);
+    }
 
-    statics: {
-        getInstanceCount: (function() {
-            let count = 0;
-            return () => (++count);
-        }())
-    },
+    static propTypes = {
+        inputId: PropTypes.string,
+        inputName: PropTypes.string,
+        className: PropTypes.string,
+        autoFocus: PropTypes.bool,
+        hoverSelect: PropTypes.bool,
+        inputValue: PropTypes.string,
+        options: PropTypes.array,
+        placeholder: PropTypes.string,
+        onChange: PropTypes.func,
+        onKeyDown: PropTypes.func,
+        onKeyPress: PropTypes.func,
+        onKeyUp: PropTypes.func,
+        onFocus: PropTypes.func,
+        onBlur: PropTypes.func,
+        onSelect: PropTypes.func,
+        onInputClick: PropTypes.func,
+        handleHint: PropTypes.func,
+        onComplete: PropTypes.func,
+        onOptionClick: PropTypes.func,
+        onOptionChange: PropTypes.func,
+        onDropdownOpen: PropTypes.func,
+        onDropdownClose: PropTypes.func,
+        optionTemplate: PropTypes.func.isRequired,
+        getMessageForOption: PropTypes.func,
+        getMessageForIncomingOptions: PropTypes.func,
+        ignoreFocusLossFor: PropTypes.array
+    }
 
-    propTypes: process.env.NODE_ENV === 'production' ? {} : {
-        inputId: React.PropTypes.string,
-        inputName: React.PropTypes.string,
-        className: React.PropTypes.string,
-        autoFocus: React.PropTypes.bool,
-        hoverSelect: React.PropTypes.bool,
-        inputValue: React.PropTypes.string,
-        options: React.PropTypes.array,
-        placeholder: React.PropTypes.string,
-        onChange: React.PropTypes.func,
-        onKeyDown: React.PropTypes.func,
-        onKeyPress: React.PropTypes.func,
-        onKeyUp: React.PropTypes.func,
-        onFocus: React.PropTypes.func,
-        onBlur: React.PropTypes.func,
-        onSelect: React.PropTypes.func,
-        onInputClick: React.PropTypes.func,
-        handleHint: React.PropTypes.func,
-        onComplete: React.PropTypes.func,
-        onOptionClick: React.PropTypes.func,
-        onOptionChange: React.PropTypes.func,
-        onDropdownOpen: React.PropTypes.func,
-        onDropdownClose: React.PropTypes.func,
-        optionTemplate: React.PropTypes.func.isRequired,
-        getMessageForOption: React.PropTypes.func,
-        getMessageForIncomingOptions: React.PropTypes.func,
-        ignoreFocusLossFor: React.PropTypes.array
-    },
+    static defaultProps = {
+        className: '',
+        inputValue: '',
+        options: [],
+        hoverSelect: true,
+        onFocus: noop,
+        onKeyDown: noop,
+        onChange: noop,
+        onInputClick: noop,
+        handleHint: () => (''),
+        onOptionClick: noop,
+        onOptionChange: noop,
+        onComplete:  noop,
+        onDropdownOpen: noop,
+        onDropdownClose: noop,
+        ignoreFocusLossFor: [],
+        getMessageForOption: () => (''),
+        getMessageForIncomingOptions: (number) => (`${number} suggestions are available. Use up and down arrows to select.`)
+    }
 
-    getDefaultProps: function() {
-        return {
-            className: '',
-            inputValue: '',
-            options: [],
-            hoverSelect: true,
-            onFocus: noop,
-            onKeyDown: noop,
-            onChange: noop,
-            onInputClick: noop,
-            handleHint: function() {
-                return '';
-            },
-            onOptionClick: noop,
-            onOptionChange: noop,
-            onComplete:  noop,
-            onDropdownOpen: noop,
-            onDropdownClose: noop,
-            ignoreFocusLossFor: [],
-            getMessageForOption: function() {
-                return '';
-            },
-            getMessageForIncomingOptions: function(number) {
-                return (
-                    number + ' suggestions are available. Use up and down arrows to select.'
-                );
-            }
-        };
-     },
-
-    getInitialState: function() {
-        return {
+    constructor(props) {
+        super(props);
+        this.state = {
             selectedIndex: -1,
             isHintVisible: false,
             isDropdownVisible: false
         };
-    },
+    }
 
-    componentWillMount: function() {
-        var _this = this,
-            uniqueId = this.constructor.getInstanceCount();
+    componentWillMount() {
+        const uniqueId = this.constructor.getInstanceCount();
+        this.userInputValue = null;
+        this.previousInputValue = null;
+        this.activeDescendantId = `react-typeahead-activedescendant-${uniqueId}`;
+        this.optionsId = `react-typeahead-options-${uniqueId}`;
+    }
 
-        _this.userInputValue = null;
-        _this.previousInputValue = null;
-        _this.activeDescendantId = 'react-typeahead-activedescendant-' + uniqueId;
-        _this.optionsId = 'react-typeahead-options-' + uniqueId;
-    },
-
-    componentDidMount: function() {
-        var addEvent = window.addEventListener,
-            handleWindowClose = this.handleWindowClose;
-
+    componentDidMount() {
         // The `focus` event does not bubble, so we must capture it instead.
         // This closes Typeahead's dropdown whenever something else gains focus.
-        addEvent('focus', handleWindowClose, true);
+        window.addEventListener('focus', this.handleWindowClose, true);
 
         // If we click anywhere outside of Typeahead, close the dropdown.
-        addEvent('click', handleWindowClose, false);
-    },
+        window.addEventListener('click', this.handleWindowClose, false);
+    }
 
-    componentWillUnmount: function() {
-        var removeEvent = window.removeEventListener,
-            handleWindowClose = this.handleWindowClose;
+    componentWillUnmount() {
+        window.removeEventListener('focus', this.handleWindowClose, true);
+        window.removeEventListener('click', this.handleWindowClose, false);
+    }
 
-        removeEvent('focus', handleWindowClose, true);
-        removeEvent('click', handleWindowClose, false);
-    },
+    componentWillReceiveProps(nextProps) {
+        const { inputValue, options} = nextProps;
+        const valueLength = inputValue.length;
 
-    componentWillReceiveProps: function(nextProps) {
-        var nextValue = nextProps.inputValue,
-            nextOptions = nextProps.options,
-            valueLength = nextValue.length,
-            isHintVisible = valueLength > 0 &&
-                // A visible part of the hint must be
-                // available for us to complete it.
-                nextProps.handleHint(nextValue, nextOptions).slice(valueLength).length > 0;
+        // A visible part of the hint must be
+        // available for us to complete it.
+        const isHintVisible = valueLength > 0 &&
+            nextProps.handleHint(inputValue, options).slice(valueLength).length > 0;
 
         this.setState({
             isHintVisible
         });
-    },
+    }
 
-    render: function() {
-        var _this = this;
+
+
+    render() {
 
         return (
             <div
-                style={{
-                    position: 'relative'
-                }}
-                className={'react-typeahead-container ' + _this.props.className}>
-                {_this.renderInput()}
-                {_this.renderDropdown()}
-                {_this.renderAriaMessageForOptions()}
-                {_this.renderAriaMessageForIncomingOptions()}
+                style={{ position: 'relative' }}
+                className={`react-typeahead-container ${this.props.className}`}>
+                {this.renderInput()}
+                {this.renderDropdown()}
+                {this.renderAriaMessageForOptions()}
+                {this.renderAriaMessageForIncomingOptions()}
             </div>
         );
     },
+}
+
+module.exports = React.createClass({
+    displayName: 'Typeahead',
+
+
 
     renderInput: function() {
         var _this = this,
