@@ -1,0 +1,21 @@
+{
+  "name": "react-typeaheadix",
+  "description": "A react typeahead component",
+  "author": "Michael Wibmer <michael@pmpkin.com>",
+  "version": "0.0.0",
+  "main": "./src/index.js",
+  "license": "MIT",
+  "bugs": "https://github.com/pmpkin/react-typaheadix/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pmpkin/react-typaheadix.git"
+  },
+  "keywords": [
+    "react",
+    "reactjs",
+    "typeahead",
+    "autocomplete",
+    "react-component",
+    "component"
+  ]
+}
