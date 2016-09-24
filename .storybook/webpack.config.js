@@ -6,7 +6,7 @@ module.exports = {
       {
         test:   /\.scss$/,
         loaders: ['style', 'raw', 'sass'],
-        include: [path.resolve(__dirname, '../scss/')]
+        include: [path.resolve(__dirname, '../stories/scss/')]
       },
       {
         test: /\.svg$/,

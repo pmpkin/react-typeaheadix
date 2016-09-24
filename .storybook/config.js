@@ -1,5 +1,5 @@
 import { configure, addDecorator } from '@kadira/storybook';
-import '../scss/style.scss';
+import '../stories/scss/styles.scss';
 
 addDecorator((story) => {
   return (story());

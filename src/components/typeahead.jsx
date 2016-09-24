@@ -8,16 +8,19 @@ const defaultStyles = {
         position: 'relative'
     },
     inputContainer: {
-        position: 'relative'
+        position: 'relative',
+        width: '100%'
     },
     hint: {
         color: 'silver',
         WebkitTextFillColor: 'silver',
-        position: 'absolute'
+        position: 'absolute',
+        width: '100%'
     },
     input: {
         position: 'relative',
-        background: 'rgba(0,0,0,0)'
+        background: 'rgba(0,0,0,0)',
+        width: '100%'
     },
     dropdown: {
         width: '100%',
@@ -31,9 +34,9 @@ const defaultStyles = {
 const defaultClassnames = {
     container: 'react-typeahead-container',
     inputContainer: 'react-typeahead-input-container',
-    hint: 'react-typeahead-input react-typeahead-hint',
-    input: 'react-typeahead-input react-typeahead-usertext',
-    dropdown: 'react-typeahead-options'
+    hint: 'react-typeahead-hint',
+    input: 'react-typeahead-input',
+    dropdown: 'react-typeahead-dropdown'
 };
 
 function noop() {}

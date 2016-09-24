@@ -7,8 +7,7 @@
   "scripts": {
     "build:components": "./node_modules/.bin/webpack",
     "build:js": "babel src/ -d lib/ --ignore src/components",
-    "build:css": "node-sass -o lib/css scss/style.scss",
-    "build": "npm run clean && npm run build:components && npm run build:js && npm run build:css",
+    "build": "npm run clean && npm run build:components && npm run build:js",
     "clean": "rimraf lib",
     "lint": "eslint --ext .js,.jsx src test",
     "test": "./node_modules/.bin/_mocha ./test/**/*.spec.js --reporter spec --compilers js:babel-core/register --recursive",

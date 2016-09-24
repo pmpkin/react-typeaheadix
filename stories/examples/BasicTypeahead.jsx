@@ -28,7 +28,7 @@ class BasicTypeahead extends React.Component {
 
     render() {
         return (
-            <div style={{ margin: '30px' }}>
+            <div>
                 <Typeahead
                     inputId="basic"
                     onChange={this.onChange}
