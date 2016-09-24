@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
 
 const style = {
     left: '-9999px',
@@ -23,12 +22,12 @@ export default class AriaStatus extends Component {
     }
 
     setTextContent(textContent = '') {
-        findDOMNode(this).textContent = textContent;
+        this.span.textContent = textContent;
     }
 
     render() {
         return (
-            <span role="status" aria-live="polite" style={style} />
+            <span role="status" aria-live="polite" style={style} ref={c => (this.span = c)} />
         );
     }
 }
