@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-
+import { findDOMNode } from 'react-dom';
 export default class Input extends Component {
 
     static propTypes = {
@@ -27,7 +27,7 @@ export default class Input extends Component {
             // This is not desired because of a possible bug in Chrome.
             // If the page is RTL, and the input's `dir` attribute is set
             // to an empty string, Chrome assumes LTR, which isn't what we want.
-            React.findDOMNode(this).removeAttribute('dir');
+            findDOMNode(this).removeAttribute('dir');
         }
     }
 
@@ -43,11 +43,15 @@ export default class Input extends Component {
     }
 
     blur() {
-        React.findDOMNode(this).blur();
+        findDOMNode(this).blur();
+    }
+
+    focus() {
+        findDOMNode(this).focus();
     }
 
     isCursorAtEnd() {
-        const inputDOMNode = React.findDOMNode(this);
+        const inputDOMNode = findDOMNode(this);
         const valueLength = this.props.value.length;
 
         return inputDOMNode.selectionStart === valueLength &&

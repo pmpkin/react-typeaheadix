@@ -1,9 +1,40 @@
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import Input from './Input';
 import AriaStatus from './AriaStatus';
 import getTextDirection from '../utils/get_text_direction';
 
+const containerStyles = {
+    position: 'relative'
+}
+
+const inputContainerStyles = {
+    position: 'relative'
+}
+
+const hintStyles = {
+    color: 'silver',
+    WebkitTextFillColor: 'silver',
+    position: 'absolute'
+}
+
+const inputStyles = {
+    position: 'relative',
+    background: 'transparent'
+}
+
+const classNames = {
+    container: 'react-typeahead-container',
+    inputContainer: 'react-typeahead-input-container',
+    hint: 'react-typeahead-input react-typeahead-hint',
+    input: 'react-typeahead-input react-typeahead-usertext',
+    dropdown: 'react-typeahead-options'
+}
+
+
 function noop() {}
+
+
 
 export default class Typeahead extends Component {
 
@@ -11,6 +42,7 @@ export default class Typeahead extends Component {
         inputId: PropTypes.string,
         inputName: PropTypes.string,
         className: PropTypes.string,
+        defaultClassnames: PropTypes.object,
         autoFocus: PropTypes.bool,
         hoverSelect: PropTypes.bool,
         inputValue: PropTypes.string,
@@ -38,10 +70,12 @@ export default class Typeahead extends Component {
 
     static defaultProps = {
         className: '',
+        defaultClassnames: classNames,
         inputValue: '',
         options: [],
         hoverSelect: true,
         onFocus: noop,
+        onBlur: noop,
         onKeyDown: noop,
         onChange: noop,
         onInputClick: noop,
@@ -63,6 +97,20 @@ export default class Typeahead extends Component {
             isHintVisible: false,
             isDropdownVisible: false
         };
+        this.showHint = this.showHint.bind(this);
+        this.hideHint = this.hideHint.bind(this);
+        this.showDropdown = this.showDropdown.bind(this);
+        this.hideDropdown = this.hideDropdown.bind(this);
+        this.handleFocus = this.handleFocus.bind(this);
+        this.handleBlur = this.handleBlur.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleMouseOut = this.handleMouseOut.bind(this);
+        this.handleOptionMouseOver = this.handleOptionMouseOver.bind(this);
+        this.handleOptionClick = this.handleOptionClick.bind(this);
+        this.handleWindowClose = this.handleWindowClose.bind(this);
+        this.focus = this.focus.bind(this);
     }
 
     componentDidMount() {
@@ -148,7 +196,7 @@ export default class Typeahead extends Component {
     }
 
     focus() {
-        this.refs.input.focus();
+        this.input.focus();
     }
 
     handleFocus(event) {
@@ -156,13 +204,19 @@ export default class Typeahead extends Component {
         this.props.onFocus(event);
     }
 
+    handleBlur(event) {
+        this.hideDropdown();
+        this.props.onBlur(event);
+    }
+
     handleClick(event) {
         this.showHint();
+        if (!this.state.isDropdownVisible) this.showDropdown();
         this.props.onInputClick(event);
     }
 
     navigate(direction, callback) {
-        const minIndex = -1;
+        const minIndex = 0;
         const maxIndex = this.props.options.length - 1;
         let index = this.state.selectedIndex + direction;
 
@@ -178,7 +232,7 @@ export default class Typeahead extends Component {
     handleKeyDown(event) {
         const { isHintVisible, isDropdownVisible, selectedIndex } = this.state;
         const { inputValue, options, onComplete, handleHint, onOptionChange, onKeyDown } = this.props;
-        const input = this.refs.input;
+
 
 
         let hasHandledKeyDown = false;
@@ -196,7 +250,7 @@ export default class Typeahead extends Component {
             break;
         case 'ArrowLeft':
         case 'ArrowRight':
-            if (isHintVisible && !event.shiftKey && input.isCursorAtEnd()) {
+            if (isHintVisible && !event.shiftKey && this.input.isCursorAtEnd()) {
                 dir = getTextDirection(inputValue);
 
                 if ((dir === 'ltr' && event.key === 'ArrowRight') || (dir === 'rtl' && event.key === 'ArrowLeft')) {
@@ -241,11 +295,10 @@ export default class Typeahead extends Component {
                             optionData = options[selectedIndex];
 
                             // Make selected option always scroll to visible
-                            dropdown = React.findDOMNode(this.refs.dropdown);
-                            selectedOption = dropdown.children[selectedIndex];
+                            selectedOption = this.dropdown.children[selectedIndex];
                             optionOffsetTop = selectedOption.offsetTop;
-                            if (optionOffsetTop + selectedOption.clientHeight > dropdown.clientHeight ||
-                                optionOffsetTop < dropdown.scrollTop) {
+                            if (optionOffsetTop + selectedOption.clientHeight > this.dropdown.clientHeight ||
+                                optionOffsetTop < this.dropdown.scrollTop) {
                                 dropdown.scrollTop = optionOffsetTop;
                             }
                         }
@@ -289,8 +342,7 @@ export default class Typeahead extends Component {
 
     handleWindowClose(event) {
         const target = event.target;
-
-        if (target !== window && !this.getDOMNode().contains(target) && this.props.ignoreFocusLossFor.indexOf(target.id) < 0) {
+        if (target !== window && !findDOMNode(this).contains(target) && this.props.ignoreFocusLossFor.indexOf(target.id) < 0) {
             this.hideHint();
             this.hideDropdown();
         }
@@ -299,26 +351,21 @@ export default class Typeahead extends Component {
     renderInput() {
         const { inputId, inputName, inputValue, autoFocus, placeholder, options, handleHint, onBlur, onSelect, onKeyUp, onKeyPress } = this.props;
         const { isDropdownVisible } = this.state;
-        const className = 'react-typeahead-input';
         const inputDirection = getTextDirection(inputValue);
 
         return (
-            <div className="react-typeahead-input-container">
+            <div style={inputContainerStyles} className={`${this.props.defaultClassnames.inputContainer}`}>
                 <Input
                     disabled
                     role="presentation"
                     aria-hidden
                     dir={inputDirection}
-                    className="react-typeahead-input react-typeahead-hint"
-                    style={{
-                        color: 'silver',
-                        WebkitTextFillColor: 'silver',
-                        position: 'absolute'
-                    }}
-                    value={this.state.isHintVisible ? handleHint(inputValue, options) : null}
+                    className={`${this.props.defaultClassnames.hint}`}
+                    style={hintStyles}
+                    value={this.state.isHintVisible ? handleHint(inputValue, options) : ''}
                 />
                 <Input
-                    ref="input"
+                    ref={(c) => (this.input = c)}
                     role="combobox"
                     aria-owns={`react-typeahead-options-${inputId}`}
                     aria-expanded={isDropdownVisible}
@@ -331,7 +378,7 @@ export default class Typeahead extends Component {
                     dir={inputDirection}
                     onClick={this.handleClick}
                     onFocus={this.handleFocus}
-                    onBlur={onBlur}
+                    onBlur={this.handleBlur}
                     onChange={this.handleChange}
                     onKeyDown={this.handleKeyDown}
                     id={inputId}
@@ -341,18 +388,16 @@ export default class Typeahead extends Component {
                     onSelect={onSelect}
                     onKeyUp={onKeyUp}
                     onKeyPress={onKeyPress}
-                    className={`${className} react-typeahead-usertext`}
-                    style={{
-                        position: 'relative',
-                        background: 'transparent'
-                    }}
+                    className={`${this.props.defaultClassnames.input}`}
+                    style={inputStyles}
                 />
             </div>
         );
     }
 
     renderDropdownOption(props, option, index, selectedIndex) {
-        const { OptionTemplate, inputValue, inputId } = props;
+        const { inputValue, inputId } = props;
+        const OptionTemplate = props.optionTemplate;
         const isSelected = index === selectedIndex;
         return (
             <li
@@ -364,13 +409,13 @@ export default class Typeahead extends Component {
                 onMouseOver={() => this.handleOptionMouseOver(index)}
             >
 
-                <OptionTemplate
-                    data={option}
-                    index={index}
-                    userInputValue={this.userInputValue}
-                    inputValue={inputValue}
-                    isSelected={isSelected}
-                />
+            <OptionTemplate
+                data={option}
+                index={index}
+                userInputValue={this.userInputValue}
+                inputValue={inputValue}
+                isSelected={isSelected}
+            />
             </li>
         );
     }
@@ -383,20 +428,25 @@ export default class Typeahead extends Component {
             return null;
         }
 
-        const className = `react-typeahead-options ${isDropdownVisible ? 'open' : ''}`;
-
         return (
             <ul
                 id={`react-typeahead-options-${inputId}`}
-                ref="dropdown"
+                ref={(c) => (this.dropdown = c)}
                 role="listbox"
                 aria-hidden={!isDropdownVisible}
-                className={className}
+                className={`${this.props.defaultClassnames.dropdown}`}
+                style={{
+                   width: '100%',
+                   background: '#fff',
+                   position: 'absolute',
+                   boxSizing: 'border-box',
+                   display: isDropdownVisible ? 'block' : 'none'
+               }}
                 onMouseOut={this.handleMouseOut}
             >
-                {
-                    options.map((data, index) => this.renderDropdownOption(this.props, data, index, selectedIndex))
-                }
+            {
+                options.map((data, index) => this.renderDropdownOption(this.props, data, index, selectedIndex))
+            }
             </ul>
         );
     }
@@ -417,7 +467,9 @@ export default class Typeahead extends Component {
 
     render() {
         return (
-            <div className={`react-typeahead-container ${this.props.className}`}>
+            <div
+                style={containerStyles}
+                className={`${this.props.defaultClassnames.container} ${this.props.className}`} ref={(c) => (this.root = c)}>
                 {this.renderInput()}
                 {this.renderDropdown()}
                 {this.renderAriaMessageForOptions()}
@@ -426,3 +478,8 @@ export default class Typeahead extends Component {
         );
     }
 }
+/*
+
+
+
+*/

@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 const style = {
     left: '-9999px',
@@ -22,7 +23,7 @@ export default class AriaStatus extends Component {
     }
 
     setTextContent(textContent = '') {
-        React.findDOMNode(this).textContent = textContent;
+        findDOMNode(this).textContent = textContent;
     }
 
     render() {
