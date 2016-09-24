@@ -1,0 +1,20 @@
+.react-typeahead-container {
+    position: relative;
+
+    .react-typeahead-input-container {
+        position: relative;
+        
+    }
+
+    .react-typeahead-options {
+        width: 100%;
+        background: #fff;
+        position: absolute;
+        box-sizing: border-box;
+        display: none;
+
+        &.visible {
+            display: block;
+        }
+    }
+}
