@@ -12,8 +12,6 @@ export default class AriaStatus extends Component {
     }
 
     componentDidMount() {
-        // This is needed as `componentDidUpdate`
-        // does not fire on the initial render.
         this.setTextContent(this.props.message);
     }
 

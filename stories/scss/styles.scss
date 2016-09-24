@@ -1,9 +1,9 @@
-.react-typeahead-container {
-    .react-typeahead-input-container {
-        .react-typeahead-hint {
+.react-typeaheadix-container {
+    .react-typeaheadix-input-container {
+        .react-typeaheadix-hint {
             border: none;
         }
-        .react-typeahead-input {
+        .react-typeaheadix-input {
             padding: 0 15px;
             width: 100%;
             border-radius: 3px;
@@ -11,6 +11,7 @@
             box-shadow: none;
             border: solid 1px #ddd;
             font-size: 15px;
+            box-sizing: border-box;
 
             &:focus {
                 border-color: #00bcd4;
@@ -18,16 +19,30 @@
             }
         }
     }
-    .react-typeahead-dropdown {
+    .react-typeaheadix-dropdown {
         padding: 0;
         width: 100%;
-        margin: 0;
+        margin-top: -1px;
         border: solid 1px #00bcd4;
 
         > li {
             list-style: none;
-            padding: 10px 15px;
             border-bottom: solid 1px #eee;
         }
+    }
+
+    &.dropdown-open {
+        .react-typeaheadix-input {
+            border-radius: 3px 3px 0 0;
+        }
+    }
+}
+
+.dropdown-option {
+    display: block;
+    padding: 10px 15px;
+
+    &.selected {
+        background: #fafafa;
     }
 }

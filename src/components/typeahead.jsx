@@ -32,11 +32,12 @@ const defaultStyles = {
 };
 
 const defaultClassnames = {
-    container: 'react-typeahead-container',
-    inputContainer: 'react-typeahead-input-container',
-    hint: 'react-typeahead-hint',
-    input: 'react-typeahead-input',
-    dropdown: 'react-typeahead-dropdown'
+    container: 'react-typeaheadix-container',
+    dropdownOpen: 'dropdown-open',
+    inputContainer: 'react-typeaheadix-input-container',
+    hint: 'react-typeaheadix-hint',
+    input: 'react-typeaheadix-input',
+    dropdown: 'react-typeaheadix-dropdown'
 };
 
 function noop() {}
@@ -104,6 +105,7 @@ class Typeahead extends Component {
             isHintVisible: false,
             isDropdownVisible: false
         };
+        // bind methods
         this.showHint = this.showHint.bind(this);
         this.hideHint = this.hideHint.bind(this);
         this.showDropdown = this.showDropdown.bind(this);
@@ -287,7 +289,9 @@ class Typeahead extends Component {
                     hasHandledKeyDown = true;
 
                     this.navigate(dir, () => {
-                        let dropdown, selectedOption, optionOffsetTop = 0;
+                        let dropdown;
+                        let selectedOption
+                        let optionOffsetTop = 0;
                         optionData = this.previousInputValue;
 
 
@@ -315,7 +319,6 @@ class Typeahead extends Component {
                     });
                 }
             }
-
             break;
         }
 
@@ -356,7 +359,7 @@ class Typeahead extends Component {
     }
 
     renderInput() {
-        const { inputId, inputName, inputValue, autoFocus, placeholder, options, handleHint, onBlur, onSelect, onKeyUp, onKeyPress } = this.props;
+        const { inputId, inputName, inputValue, autoFocus, placeholder, options, handleHint, onSelect, onKeyUp, onKeyPress } = this.props;
         const { isDropdownVisible } = this.state;
         const inputDirection = getTextDirection(inputValue);
 
@@ -467,10 +470,11 @@ class Typeahead extends Component {
     }
 
     render() {
+
         return (
             <div
                 style={this.props.style.container}
-                className={`${this.props.defaultClassnames.container} ${this.props.className}`}
+                className={`${this.props.defaultClassnames.container} ${this.state.isDropdownVisible ? this.props.defaultClassnames.dropdownOpen : ''} ${this.props.className}`}
                 ref={(c) => (this.root = c)}
             >
                 {this.renderInput()}
