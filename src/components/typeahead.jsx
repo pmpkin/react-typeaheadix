@@ -214,8 +214,9 @@ class Typeahead extends Component {
     }
 
     handleBlur(event) {
-        this.hideDropdown();
-        this.props.onBlur(event);
+        console.log('blur');
+        //this.hideDropdown();
+        //this.props.onBlur(event);
     }
 
     handleClick(event) {
@@ -251,11 +252,17 @@ class Typeahead extends Component {
 
         switch (event.key) {
         case 'End':
+            if (isHintVisible && !event.shiftKey) {
+                event.preventDefault();
+                onComplete(event, handleHint(inputValue, options));
+            }
+            break;
         case 'Tab':
             if (isHintVisible && !event.shiftKey) {
                 event.preventDefault();
                 onComplete(event, handleHint(inputValue, options));
             }
+            this.input.blur();
             break;
         case 'ArrowLeft':
         case 'ArrowRight':
@@ -330,7 +337,7 @@ class Typeahead extends Component {
 
     handleOptionClick(selectedIndex, event) {
         const { options, onOptionClick } = this.props;
-
+        console.log('arsch');
         this.focus();
         this.hideHint();
         this.hideDropdown();
@@ -431,7 +438,7 @@ class Typeahead extends Component {
     }
 
     renderDropdown() {
-        const { inputId, options } = this.props;
+        const { inputId, options, inputValue } = this.props;
         const { selectedIndex, isDropdownVisible } = this.state;
 
         if (options.length < 1) {
@@ -450,6 +457,11 @@ class Typeahead extends Component {
             >
             {
                 options.map((data, index) => this.renderDropdownOption(this.props, data, index, selectedIndex))
+            }
+            {
+                inputValue && (!options || !options.length) && (
+                    <li>Empty</li>
+                )
             }
             </ul>
         );

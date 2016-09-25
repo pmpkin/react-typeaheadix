@@ -18,16 +18,36 @@
                 outline: none;
             }
         }
+
+        .react-typeaheadix-hint {
+            padding: 0 15px;
+            height: 44px;
+            border: solid 1px transparent;
+            border-radius: 3px 3px 0 0;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
     }
     .react-typeaheadix-dropdown {
         padding: 0;
         width: 100%;
         margin-top: -1px;
         border: solid 1px #00bcd4;
+        border-top-color: #ddd;
+        border-radius: 0 0 3px 3px;
 
         > li {
             list-style: none;
             border-bottom: solid 1px #eee;
+
+            &:last-child {
+                border-radius: 0 0 3px 3px;
+                border-bottom: none;
+
+                * {
+                    border-radius: 0 0 3px 3px;
+                }
+            }
         }
     }
 
@@ -40,7 +60,7 @@
 
 .dropdown-option {
     display: block;
-    padding: 10px 15px;
+    padding: 12px 15px;
 
     &.selected {
         background: #fafafa;

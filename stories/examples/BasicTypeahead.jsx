@@ -2,39 +2,35 @@ import React from 'react';
 import Typeahead from '../../src/components/Typeahead';
 import options from './fake-data';
 
-class OptionTemplate extends React.Component {
-    render() {
-        const { data, isSelected } = this.props;
-        return (
-            <span className={`dropdown-option ${isSelected ? 'selected' : ''}`}>
-                {data.name}
-            </span>
-        )
-    }
-
-}
+const OptionTemplate = ({ data, isSelected }) => (
+    <span className={`dropdown-option ${isSelected ? 'selected' : ''}`}>
+        {data.name}
+    </span>
+)
 
 class BasicTypeahead extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            options,
+            options: [],
             inputValue: ''
         }
         this.onChange = this.onChange.bind(this);
         this.onOptionClick = this.onOptionClick.bind(this);
         this.onOptionChange = this.onOptionClick.bind(this);
+        this.handleHint = this.handleHint.bind(this);
     }
 
     onChange(e) {
         this.setState({
-            inputValue: e.currentTarget.value
-        })
+            inputValue: e.currentTarget.value,
+            options: options.filter(person => person.name.indexOf(e.currentTarget.value) > -1)
+        });
     }
 
     onOptionClick(e, person, index) {
-        console.log(person);
+        console.log('click', person);
         this.setState({
             inputValue: person.name
         })
@@ -46,6 +42,13 @@ class BasicTypeahead extends React.Component {
         })
     }
 
+    handleHint(inputValue, items) {
+        if (new RegExp('^' + inputValue).test(items[0].name)) {
+            return items[0].name;
+        }
+        return '';
+    }
+
     render() {
         return (
             <div>
@@ -55,6 +58,7 @@ class BasicTypeahead extends React.Component {
                     onOptionClick={this.onOptionClick}
                     onOptionChange={this.onOptionChange}
                     inputValue={this.state.inputValue}
+                    
                     options={this.state.options}
                     optionTemplate={OptionTemplate}
                 />
