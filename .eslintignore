@@ -1,3 +1,5 @@
 **/node_modules
 **/webpack.config.js
 **/src/index.js
+**/stories/examples/fake-data.js
+**/src/utils/*_regexp.js
