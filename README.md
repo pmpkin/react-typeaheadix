@@ -132,7 +132,7 @@ For example, this allows us to associate a label with the Typeahead's input elem
 * If true, navigating through the dropdown via arrow keys causes the highlighted option to be selected.
 
 #### *object* defaultClassnames ***optional***
-You can provide your own set of classnames, which should be user for the component. The default classnames are as follows:
+You can provide your own set of classnames, which should be used for the component. The default classnames are as follows:
 ```
 const defaultClassnames = {
     container: 'react-typeaheadix-container',
