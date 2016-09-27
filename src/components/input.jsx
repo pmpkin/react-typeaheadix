@@ -33,7 +33,6 @@ export default class Input extends Component {
 
     isCursorAtEnd() {
         const valueLength = this.props.value.length;
-
         return this.input.selectionStart === valueLength &&
                this.input.selectionEnd === valueLength;
     }

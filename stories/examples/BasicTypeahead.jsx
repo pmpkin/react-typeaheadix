@@ -30,14 +30,12 @@ class BasicTypeahead extends React.Component {
         });
     }
 
-    onOptionClick(e, person, index) {
-        console.log('click', person, index);
+    onOptionClick(e, person) {
         this.setState({
             inputValue: person.name
         })
     }
-    onOptionChange(e, person, index) {
-        console.log('optionChange', person, index);
+    onOptionChange(e, person) {
         this.setState({
             inputValue: person.name
         })

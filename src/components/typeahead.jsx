@@ -200,7 +200,6 @@ class Typeahead extends Component {
     }
 
     handleChange(event) {
-        console.log(event.currentTarget.value);
         this.showHint();
         this.showDropdown();
         this.setSelectedIndex(-1);
@@ -227,7 +226,7 @@ class Typeahead extends Component {
         const minIndex = 0;
         const maxIndex = this.props.options.length - 1;
         let index = this.state.selectedIndex + direction;
-        console.log('minindex: ', minIndex, 'maxindex:', maxIndex, 'nextindec', index);
+
         if (index > maxIndex) {
             index = minIndex;
         } else if (index < minIndex) {
@@ -298,7 +297,6 @@ class Typeahead extends Component {
                     hasHandledKeyDown = true;
 
                     this.navigate(dir, () => {
-                        console.log('selectedIdnex=', this.state.selectedIndex);
                         let dropdown;
                         let selectedOption
                         let optionOffsetTop = 0;
@@ -344,7 +342,6 @@ class Typeahead extends Component {
 
     handleOptionClick(selectedIndex, event) {
         const { options, onOptionClick } = this.props;
-        console.log('selectedIndex', selectedIndex);
         this.focus();
         this.hideHint();
         this.hideDropdown();
