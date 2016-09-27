@@ -2,6 +2,9 @@ A react typeahead component (WIP)
 ==============================================
 Fork of [react-typeahead-component](https://github.com/ezequiel/react-typeahead-component/issues)
 
+[![Build Status](https://travis-ci.org/pmpkin/react-typeaheadix.svg)](https://travis-ci.org/pmpkin/react-typeaheadix)
+[![npm version](https://badge.fury.io/js/react-typeaheadix.svg)](https://badge.fury.io/js/react-typeaheadix)
+
 Installation
 ---------------
 ```
