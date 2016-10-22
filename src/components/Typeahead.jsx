@@ -489,7 +489,7 @@ class Typeahead extends Component {
         return (
             <div
                 style={this.props.style.container}
-                className={`${this.props.defaultClassnames.container} ${this.state.isDropdownVisible ? this.props.defaultClassnames.dropdownOpen : ''} ${this.props.className}`}
+                className={`${this.props.defaultClassnames.container} ${this.state.isDropdownVisible && this.props.options.length ? this.props.defaultClassnames.dropdownOpen : ''} ${this.props.className}`}
                 ref={(c) => (this.root = c)}
             >
                 {this.renderInput()}
