@@ -14,7 +14,7 @@ class BasicTypeahead extends React.Component {
         super(props);
         this.state = {
             options: [],
-            inputValue: ''
+            inputValue: '',
         }
         this.onChange = this.onChange.bind(this);
         this.onOptionClick = this.onOptionClick.bind(this);
@@ -72,6 +72,17 @@ class BasicTypeahead extends React.Component {
                 <p>Typeahead without hint</p>
                 <Typeahead
                     inputId="basicNoHint"
+                    onChange={this.onChange}
+                    onOptionClick={this.onOptionClick}
+                    onOptionChange={this.onOptionChange}
+                    inputValue={this.state.inputValue}
+                    options={this.state.options}
+                    optionTemplate={OptionTemplate}
+                />
+                <p>Disabled Typeahead</p>
+                <Typeahead
+                    inputId="disabledTypeahead"
+                    disabled
                     onChange={this.onChange}
                     onOptionClick={this.onOptionClick}
                     onOptionChange={this.onOptionChange}

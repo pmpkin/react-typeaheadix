@@ -369,7 +369,7 @@ class Typeahead extends Component {
     }
 
     renderInput() {
-        const { inputId, inputName, inputValue, autoFocus, placeholder, options, handleHint, onBlur, onSelect, onKeyUp, onKeyPress } = this.props;
+        const { inputId, inputName, inputValue, disabled, autoFocus, placeholder, options, handleHint, onBlur, onSelect, onKeyUp, onKeyPress } = this.props;
         const { isDropdownVisible } = this.state;
         const inputDirection = getTextDirection(inputValue);
 
@@ -402,6 +402,7 @@ class Typeahead extends Component {
                     onChange={this.handleChange}
                     onKeyDown={this.handleKeyDown}
                     id={inputId}
+                    disabled={disabled}
                     name={inputName}
                     autoFocus={autoFocus}
                     placeholder={placeholder}
@@ -493,9 +494,9 @@ class Typeahead extends Component {
                 ref={(c) => (this.root = c)}
             >
                 {this.renderInput()}
-                {this.renderDropdown()}
-                {this.renderAriaMessageForOptions()}
-                {this.renderAriaMessageForIncomingOptions()}
+                {!this.props.disabled && this.renderDropdown()}
+                {!this.props.disabled && this.renderAriaMessageForOptions()}
+                {!this.props.disabled && this.renderAriaMessageForIncomingOptions()}
             </div>
         );
     }
